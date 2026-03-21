@@ -1,0 +1,2 @@
+extend-diff-ignore = "^githash(\.h)?$"
+extend-diff-ignore = "^ext/.*$"
