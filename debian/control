@@ -2,8 +2,16 @@ Source: galmon
 Section: net
 Priority: optional
 Maintainer: Patrick Tudor <debian@ptudor.net>
-Build-Depends: debhelper (>=11~), help2man, libzstd-dev, adduser, libfmt-dev, libcurl4-openssl-dev
-Standards-Version: 4.3.0
+Build-Depends: debhelper-compat (= 13),
+ libzstd-dev,
+ libfmt-dev,
+ libcurl4-openssl-dev,
+ libssl-dev,
+ libprotobuf-dev,
+ protobuf-compiler,
+ libncurses-dev,
+ adduser
+Standards-Version: 4.6.2
 Homepage: https://github.com/ahupowerdns/galmon/
 
 Package: galmon
