@@ -1,3 +1,9 @@
+galmon (0.20260403-0mattb0) pi; urgency=medium
+
+  * Private release
+
+ -- Matt Brown <matt@mattb.nz>  Fri, 03 Apr 2026 13:52:16 +1300
+
 galmon (0.20250101-1) trixie; urgency=low
 
   * Update packaging for Debian Trixie / armhf cross-build
