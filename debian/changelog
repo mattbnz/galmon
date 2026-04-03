@@ -1,11 +1,16 @@
 galmon (0.20250101-1) trixie; urgency=low
 
   * Update packaging for Debian Trixie / armhf cross-build
-  * Update Build-Depends: add libprotobuf-dev, protobuf-compiler, libssl-dev, libncurses-dev
+  * Update Build-Depends: add libprotobuf-dev, protobuf-compiler, libssl-dev,
+    libncurses-dev, libeigen3-dev
   * Switch to debhelper-compat 13
-  * Exclude navparse from build (requires libh2o-evloop, removed from Debian Trixie)
+  * Exclude navparse, reporter, galmonmon from build (require libh2o-evloop,
+    removed from Debian Trixie)
+  * Add libeigen3-dev for coverage.cc (used by sp3feed)
+  * Pass cross-compiler via DEB_HOST_GNU_TYPE to Makefile
   * Skip help2man man page generation (incompatible with cross-compilation)
   * Generate githash.h and navmon.pb.cc during build
+  * Switch source format to 3.0 (native)
 
  -- Patrick Tudor <debian@ptudor.net>  Thu, 01 Jan 2025 00:00:00 +0000
 

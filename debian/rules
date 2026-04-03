@@ -3,35 +3,36 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 export DEB_CFLAGS_MAINT_APPEND  = -Wall
 export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 
-# navparse requires libh2o-evloop which is not in Debian Trixie
-PROGRAMS = ubxtool navnexus navcat navrecv navdump testrunner navdisplay tlecatch reporter sp3feed \
-	galmonmon rinreport rinjoin rtcmtool gndate septool navmerge
+include /usr/share/dpkg/architecture.mk
+
+# navparse, reporter, galmonmon require libh2o-evloop which is not in Debian Trixie
+PROGRAMS = ubxtool navnexus navcat navrecv navdump testrunner navdisplay tlecatch sp3feed \
+	rinreport rinjoin rtcmtool gndate septool navmerge
 
 %:
 	dh $@
 
 override_dh_auto_build:
-	# Generate githash.h before building (Makefile CHEAT_ARG runs this but needs git)
+	# Generate githash.h; git may not be available in chroot, so fall back to a static value
 	./update-git-hash-if-necessary || echo '#define GIT_HASH "packaged"' > githash.h
-	# Generate protobuf sources
+	test -f githash.h || echo '#define GIT_HASH "packaged"' > githash.h
+	# Generate protobuf C++ sources
 	protoc --cpp_out=./ navmon.proto
-	# Build only the programs that don't need h2o (navparse excluded)
-	$(MAKE) $(PROGRAMS)
+	# Build programs with the correct cross-compiler (navparse excluded: needs libh2o-evloop)
+	$(MAKE) $(PROGRAMS) CXX=$(DEB_HOST_GNU_TYPE)-g++ CC=$(DEB_HOST_GNU_TYPE)-gcc
 
 override_dh_auto_install:
-	# Install binaries manually to avoid help2man (can't run cross-compiled armhf binaries)
+	# Install binaries manually - skip help2man (can't run cross-compiled armhf binaries on host)
 	install -m 755 -d debian/galmon/usr/bin
 	for bin in $(PROGRAMS); do \
-		$(CROSS_COMPILE)strip $$bin; \
 		install -m 755 $$bin debian/galmon/usr/bin/$$bin; \
 	done
-	# Install html assets
+	# Install html assets used by navparse (still useful to have on the system)
 	mkdir -p debian/galmon/usr/share/galmon
 	cp -a html debian/galmon/usr/share/galmon/
 
-# Remove initd overrides - trixie uses systemd only
+# Skip sysvinit - trixie uses systemd only
 override_dh_installinit:
-	# skip sysvinit
 
 override_dh_installsystemd:
 	dh_installsystemd --no-enable --no-start --name=galmon-upgrade galmon-upgrade.service

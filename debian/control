@@ -10,6 +10,7 @@ Build-Depends: debhelper-compat (= 13),
  libprotobuf-dev,
  protobuf-compiler,
  libncurses-dev,
+ libeigen3-dev,
  adduser
 Standards-Version: 4.6.2
 Homepage: https://github.com/ahupowerdns/galmon/
